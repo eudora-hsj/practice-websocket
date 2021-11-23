@@ -13,10 +13,16 @@ const wss = new SocketServer({ server })
 wss.on('connection', ws => {
     console.log('Client connected')
     ws.on('message', data => {
-        // console.log(data)
+
         data = data.toString()  // 收回來是 Buffer 格式、需轉成字串
-        // console.log(data)
-        ws.send(data)
+        /// 單一發送： ws.send(data)
+
+        let clients = wss.clients  //取得所有連接中的 client
+
+        clients.forEach(client => {
+            client.send(data)  // 發送至每個 client
+        })
+        
     })
     ws.on('close', () => {
         console.log('Close connected')
