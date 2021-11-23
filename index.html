@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script>
+    document.addEventListener("DOMContentLoaded", function(event) { 
+
+      let keyinDom = document.querySelector('#txtInput')
+      let showDom = document.querySelector('#txtShow')
+      document.querySelector("#btnSend").addEventListener('click',function(){
+        let txt = keyinDom.value;
+        ws.send(txt);
+      })
+      // 使用webSocket 的網址向 Server 開啟連結
+        var ws = new WebSocket('ws://localhost:3000')
+        ws.onopen = () => {
+          console.log('open connection')
+        }
+        ws.onclose = () => {
+          console.log('close connection');
+        }
+        //接收 Server 發送的訊息
+        ws.onmessage = event => {
+          let txt = event.data
+          if (!showDom.value) showDom.value = txt
+          else showDom.value = showDom.value + "\n" + txt
+          keyinDom.value = ""
+        }
+    });
+  </script>
+</head>
+<body>
+  <textarea id="txtShow" style="height:60vmin;width:80vmin" disabled></textarea></br>
+  <input id="txtInput" style="width:80vmin" type="text">
+  <button id="btnSend">送出</button>
+</body>
+</html>
